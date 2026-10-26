@@ -1,12 +1,13 @@
 package com.example.loja_fubecas.endpoint;
 
-import com.example.loja_fubecas.model.ConsultarFubecaRequest;
-import com.example.loja_fubecas.model.ConsultarFubecaResponse;
-
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
+
+import com.example.loja_fubecas.exception.FubecaNaoEncontradaException;
+import com.example.loja_fubecas.model.ConsultarFubecaRequest;
+import com.example.loja_fubecas.model.ConsultarFubecaResponse;
 
 @Endpoint
 public class FubecaEndpoint {
@@ -38,11 +39,8 @@ public class FubecaEndpoint {
                 response.setQuantidadeEstoque(80);
                 break;
             default:
-                response.setNome("Item não encontrado");
-                response.setTipo("-");
-                response.setPreco(0.0);
-                response.setQuantidadeEstoque(0);
-                break;
+                // Dispara a exceção mapeada para SOAP Fault
+                throw new FubecaNaoEncontradaException("Fubeca com o código " + request.getCodigo() + " não foi encontrada!");
         }
 
         return response;
